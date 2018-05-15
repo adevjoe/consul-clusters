@@ -1,0 +1,39 @@
+version: '3.0'
+
+services:
+
+  consul-server-bootstrap:
+    image: progrium/consul:latest
+    command: -server -bootstrap -rejoin
+    hostname: "consul"
+    ports:
+        - "8400"
+        - "8500"
+        - "8600"
+        - "53/udp"
+    restart: always
+
+  consul-server-1:
+    image: progrium/consul:latest
+    command: -server -retry-join consul-server-bootstrap
+    restart: always
+
+  consul-server-2:
+    image: progrium/consul:latest
+    command: -server -retry-join consul-server-bootstrap
+    restart: always
+
+  consul-agent-1:
+    image: progrium/consul:latest
+    command: -retry-join consul-server-bootstrap
+    restart: always
+
+  consul-agent-2:
+    image: progrium/consul:latest
+    command: -retry-join consul-server-bootstrap
+    restart: always
+
+  consul-agent-3:
+    image: progrium/consul:latest
+    command: -retry-join consul-server-bootstrap
+    restart: always
